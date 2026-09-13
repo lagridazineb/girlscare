@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+@theme {
+  --font-body: "Cairo", "Segoe UI", sans-serif;
+  --font-display: "Lalezar", "Cairo", sans-serif;
+
+  --color-blush-50: #fff8f7;
+  --color-blush-100: #fdf1f3;
+  --color-blush-200: #fbe3e8;
+  --color-blush-300: #f6cbd6;
+  --color-blush-400: #efa9bd;
+  --color-blush-500: #e37f9d;
+  --color-rose-600: #d6417a;
+  --color-rose-700: #bc2e68;
+  --color-rose-800: #942151;
+  --color-rose-900: #631638;
+  --color-cream-100: #fffaf5;
+  --color-cream-200: #fdf3e7;
+  --color-gold-400: #dcae5b;
+  --color-gold-500: #c8963f;
+  --color-ink-700: #5a3341;
+  --color-ink-800: #46242f;
+  --color-ink-900: #331621;
+
+  --shadow-soft: 0 10px 30px -12px rgba(148, 33, 81, 0.25);
+  --shadow-card: 0 4px 18px -6px rgba(148, 33, 81, 0.18);
+}
+
+html, body {
+  height: 100%;
+  overscroll-behavior-y: none;
+}
+
+body {
+  font-family: var(--font-body);
+  background: linear-gradient(180deg, #fff6f8 0%, #fdeef2 100%);
+  color: var(--color-ink-800);
+  -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-blush-300);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* decorative heart divider */
+.heart-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--color-rose-600);
+}
+.heart-divider::before,
+.heart-divider::after {
+  content: "";
+  height: 1px;
+  width: 2.5rem;
+  background: linear-gradient(90deg, transparent, currentColor);
+  opacity: 0.5;
+}
+.heart-divider::after {
+  background: linear-gradient(90deg, currentColor, transparent);
+}
+
+/* Book page paper texture */
+.paper-texture {
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(255,255,255,0.6) 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(255,255,255,0.4) 0%, transparent 40%);
+}
+
+.book-shadow {
+  filter: drop-shadow(0 25px 45px rgba(148, 33, 81, 0.35));
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+.animate-sparkle {
+  animation: sparkle 2.2s ease-in-out infinite;
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float {
+  animation: floatY 4s ease-in-out infinite;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* React-pageflip container resets */
+.stf__parent {
+  touch-action: pan-y;
+}
+.stf__wrapper {
+  margin: 0 auto;
+}

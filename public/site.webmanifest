@@ -1,0 +1,33 @@
+{
+  "name": "Fatislaaay | تحدي 66 يوماً",
+  "short_name": "Fatislaaay",
+  "description": "رحلتك الخاصة نحو أفضل نسخة من نفسك، في 66 يوماً من الالتزام، والتعلم، والنمو",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf1f3",
+  "theme_color": "#fdf1f3",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
