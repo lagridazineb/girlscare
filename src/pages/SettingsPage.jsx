@@ -5,6 +5,7 @@ import { LineInput } from "../components/common/Inputs";
 
 export default function SettingsPage() {
   const profile = useAppStore((s) => s.profile);
+  const access = useAppStore((s) => s.access);
   const setProfile = useAppStore((s) => s.setProfile);
   const currentDay = useAppStore((s) => s.currentDay);
   const setCurrentDay = useAppStore((s) => s.setCurrentDay);
@@ -20,6 +21,13 @@ export default function SettingsPage() {
         <p className="font-bold text-rose-700 text-sm mb-2">الملف الشخصي</p>
         <p className="text-[11px] text-ink-700/60 mb-1">اسمي</p>
         <LineInput value={profile.name} onChange={(v) => setProfile({ name: v })} placeholder="اسمك" />
+      </Card>
+
+      <Card className="mb-3">
+        <p className="font-bold text-rose-700 text-sm mb-1">كود الدخول الخاص بكِ</p>
+        <p className="text-[13px] font-bold text-rose-600 tracking-widest" dir="ltr">
+          {access.code || "—"}
+        </p>
       </Card>
 
       <Card className="mb-3">
