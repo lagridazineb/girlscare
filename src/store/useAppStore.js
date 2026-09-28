@@ -79,6 +79,14 @@ const DEFAULT_DAY = emptyDay();
 export const useAppStore = create(
   persist(
     (set, get) => ({
+      // ---------- access gate ----------
+      access: {
+        verified: false,
+        code: null,
+      },
+      verifyAccessCode: (code) =>
+        set((state) => ({ access: { ...state.access, verified: true, code } })),
+
       // ---------- profile ----------
       profile: {
         name: "",
