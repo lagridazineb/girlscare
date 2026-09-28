@@ -3,13 +3,11 @@ import Card from "../common/Card";
 import ProgressBar from "../common/ProgressBar";
 import { useAppStore } from "../../store/useAppStore";
 import { CHECKLIST_SECTIONS, dayOrdinalAr } from "../../data/dailyChecklist";
-import { pageIndexForDay } from "../../utils/bookPages";
 
 export default function TodayGlance() {
   const navigate = useNavigate();
   const currentDay = useAppStore((s) => s.currentDay);
   const dayData = useAppStore((s) => s.days[currentDay]);
-  const setBookTargetPage = useAppStore((s) => s.setBookTargetPage);
 
   const checklist = dayData?.checklist || {};
   const totalItems = CHECKLIST_SECTIONS.reduce((n, s) => n + s.items.length, 0);
@@ -17,8 +15,7 @@ export default function TodayGlance() {
   const percent = totalItems ? Math.round((doneItems / totalItems) * 100) : 0;
 
   function openToday() {
-    setBookTargetPage(pageIndexForDay(currentDay));
-    navigate("/book");
+    navigate(`/day/${currentDay}`);
   }
 
   return (
