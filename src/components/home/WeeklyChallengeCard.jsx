@@ -4,19 +4,16 @@ import ProgressBar from "../common/ProgressBar";
 import { useAppStore } from "../../store/useAppStore";
 import { getChallengeForWeek } from "../../data/weeklyChallenges";
 import { weekOfDay } from "../../utils/dayUtils";
-import { pageIndexForKind } from "../../utils/bookPages";
 
 export default function WeeklyChallengeCard() {
   const navigate = useNavigate();
   const currentDay = useAppStore((s) => s.currentDay);
-  const setBookTargetPage = useAppStore((s) => s.setBookTargetPage);
   const currentWeek = weekOfDay(currentDay);
   const weekData = useAppStore((s) => s.getWeek(currentWeek));
   const challenge = getChallengeForWeek(currentWeek);
 
   function openChallenge() {
-    setBookTargetPage(pageIndexForKind("challenge", { week: currentWeek }));
-    navigate("/book");
+    navigate(`/challenge/${currentWeek}`);
   }
 
   if (!challenge) {
