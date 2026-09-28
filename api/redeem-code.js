@@ -7,10 +7,20 @@ function normalize(input) {
   return (input || "").trim().toUpperCase().replace(/\s+/g, "");
 }
 
+// Vercel's Upstash integration can name its variables either
+// UPSTASH_REDIS_REST_* or KV_REST_API_* depending on how it was created,
+// so we accept both.
 let redis = null;
 function getRedis() {
   if (!redis) {
-    redis = Redis.fromEnv();
+    const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+    if (!url || !token) {
+      const err = new Error("Redis environment variables are missing");
+      err.code = "missing_database_config";
+      throw err;
+    }
+    redis = new Redis({ url, token });
   }
   return redis;
 }
@@ -58,6 +68,9 @@ export default async function handler(req, res) {
     res.status(200).json({ ok: true, code: normalized });
   } catch (err) {
     console.error("redeem-code error:", err);
-    res.status(500).json({ ok: false, reason: "server_error" });
+    res.status(500).json({
+      ok: false,
+      reason: err.code === "missing_database_config" ? "missing_database_config" : "server_error",
+    });
   }
 }
