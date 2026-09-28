@@ -8,12 +8,20 @@ import SkincarePage from "./pages/SkincarePage";
 import PrayerPage from "./pages/PrayerPage";
 import SchoolPage from "./pages/SchoolPage";
 import JournalPage from "./pages/JournalPage";
+import DayFocusPage from "./pages/DayFocusPage";
+import ChallengeFocusPage from "./pages/ChallengeFocusPage";
 import ProgressPage from "./pages/ProgressPage";
 import SettingsPage from "./pages/SettingsPage";
 import OnboardingPage from "./pages/OnboardingPage";
+import AccessCodeGate from "./pages/AccessCodeGate";
 
 export default function App() {
+  const accessVerified = useAppStore((s) => s.access.verified);
   const onboarded = useAppStore((s) => s.profile.onboarded);
+
+  if (!accessVerified) {
+    return <AccessCodeGate />;
+  }
 
   if (!onboarded) {
     return <OnboardingPage onDone={() => {}} />;
@@ -30,6 +38,8 @@ export default function App() {
           <Route path="/prayer" element={<PrayerPage />} />
           <Route path="/school" element={<SchoolPage />} />
           <Route path="/journal" element={<JournalPage />} />
+          <Route path="/day/:day" element={<DayFocusPage />} />
+          <Route path="/challenge/:week" element={<ChallengeFocusPage />} />
           <Route path="/progress" element={<ProgressPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
