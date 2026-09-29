@@ -1,4 +1,4 @@
-import { Redis } from "@upstash/redis";
+import Redis from "ioredis";
 import { VALID_ACCESS_CODES } from "./_lib/accessCodesList.js";
 
 const VALID_SET = new Set(VALID_ACCESS_CODES);
@@ -7,22 +7,35 @@ function normalize(input) {
   return (input || "").trim().toUpperCase().replace(/\s+/g, "");
 }
 
-// Vercel's Upstash integration can name its variables either
-// UPSTASH_REDIS_REST_* or KV_REST_API_* depending on how it was created,
-// so we accept both.
-let redis = null;
+// Different Redis add-ons on Vercel name their connection variable
+// differently (REDIS_URL, KV_URL, etc.), so we accept a few common ones.
+function getConnectionString() {
+  return (
+    process.env.REDIS_URL ||
+    process.env.KV_URL ||
+    process.env.REDIS_CONNECTION_STRING ||
+    null
+  );
+}
+
+// Reused across "warm" invocations of the same serverless instance so we
+// don't open a brand new connection on every request.
+let redisClient = null;
 function getRedis() {
-  if (!redis) {
-    const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-    const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-    if (!url || !token) {
-      const err = new Error("Redis environment variables are missing");
+  if (!redisClient) {
+    const url = getConnectionString();
+    if (!url) {
+      const err = new Error("Redis connection string is missing");
       err.code = "missing_database_config";
       throw err;
     }
-    redis = new Redis({ url, token });
+    redisClient = new Redis(url, {
+      maxRetriesPerRequest: 2,
+      lazyConnect: false,
+    });
+    redisClient.on("error", (e) => console.error("Redis client error:", e));
   }
-  return redis;
+  return redisClient;
 }
 
 export default async function handler(req, res) {
@@ -57,10 +70,11 @@ export default async function handler(req, res) {
 
     // SET ... NX only sets the key if it does NOT already exist, and does so
     // atomically — so two people submitting the same code at the same
-    // instant can never both "win".
-    const firstTimeRedeemed = await db.set(key, new Date().toISOString(), { nx: true });
+    // instant can never both "win". Returns "OK" if it was set, null if the
+    // key already existed.
+    const result = await db.set(key, new Date().toISOString(), "NX");
 
-    if (!firstTimeRedeemed) {
+    if (result !== "OK") {
       res.status(200).json({ ok: false, reason: "already_used" });
       return;
     }
