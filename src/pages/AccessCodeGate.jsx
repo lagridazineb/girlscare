@@ -40,6 +40,10 @@ export default function AccessCodeGate() {
       if (data.ok) {
         verifyAccessCode(data.code);
       } else {
+        if (data.debug) {
+          // eslint-disable-next-line no-console
+          console.error("redeem-code diagnostic info:", data.reason, data.debug);
+        }
         fail(data.reason);
       }
     } catch {
