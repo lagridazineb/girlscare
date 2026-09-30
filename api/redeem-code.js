@@ -27,6 +27,11 @@ function getRedis() {
     if (!url) {
       const err = new Error("Redis connection string is missing");
       err.code = "missing_database_config";
+      err.debug = {
+        REDIS_URL: Boolean(process.env.REDIS_URL),
+        KV_URL: Boolean(process.env.KV_URL),
+        REDIS_CONNECTION_STRING: Boolean(process.env.REDIS_CONNECTION_STRING),
+      };
       throw err;
     }
     redisClient = new Redis(url, {
@@ -85,6 +90,10 @@ export default async function handler(req, res) {
     res.status(500).json({
       ok: false,
       reason: err.code === "missing_database_config" ? "missing_database_config" : "server_error",
+      // Safe to expose: just which variable NAMES were found, never values.
+      // This is here purely to make setup issues diagnosable from the
+      // browser's Network tab instead of needing Vercel's function logs.
+      debug: err.debug || { message: String(err.message || err) },
     });
   }
 }
