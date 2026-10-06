@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAppStore, TOTAL_DAYS } from "../store/useAppStore";
 import Card from "../components/common/Card";
 import { LineInput } from "../components/common/Inputs";
+import NotificationsCard from "../components/settings/NotificationsCard";
 
 export default function SettingsPage() {
   const profile = useAppStore((s) => s.profile);
@@ -29,6 +30,8 @@ export default function SettingsPage() {
           {access.code || "—"}
         </p>
       </Card>
+
+      <NotificationsCard />
 
       <Card className="mb-3">
         <p className="font-bold text-rose-700 text-sm mb-2">اليوم الحالي</p>
