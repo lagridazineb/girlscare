@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { useAppStore } from "./store/useAppStore";
 import AppShell from "./components/layout/AppShell";
@@ -14,10 +15,19 @@ import ProgressPage from "./pages/ProgressPage";
 import SettingsPage from "./pages/SettingsPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import AccessCodeGate from "./pages/AccessCodeGate";
+import { syncSubscription } from "./utils/push";
 
 export default function App() {
   const accessVerified = useAppStore((s) => s.access.verified);
   const onboarded = useAppStore((s) => s.profile.onboarded);
+  const code = useAppStore((s) => s.access.code);
+  const name = useAppStore((s) => s.profile.name);
+  const startDate = useAppStore((s) => s.profile.startDate);
+
+  // Keep the server's copy of name / start date fresh (only if notifications are on).
+  useEffect(() => {
+    if (accessVerified && onboarded) syncSubscription({ code, name, startDate });
+  }, [accessVerified, onboarded, code, name, startDate]);
 
   if (!accessVerified) {
     return <AccessCodeGate />;
